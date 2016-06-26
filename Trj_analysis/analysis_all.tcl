@@ -1,6 +1,5 @@
-set mutlist [list wt N27C N58C N27-PEG4 N58-PEG4 N27C-PEG4 N58C-PEG4 N27-PEG45 N58-PEG45 N27C-PEG45 N58C-PEG45]
+set mutlist [list wt N27C N58C]
 
-# set mutlist [list N58C-PEG45]
 foreach mut $mutlist {
 
     set syspath ../1-system
@@ -8,9 +7,9 @@ foreach mut $mutlist {
     set inPrefix ${mut}_ions
     set dcdName ${mut}_run_nw
     set outfile_rmsd_all [open "${mut}_rmsd_backbone.txt" w]
-    # set outfile_sasa_all [open "${mut}_sasa_all.txt" w]
-    # set outfile_sasa_hpob [open "${mut}_sasa_hpob.txt" w]
-    # set outfile_sasa_hpli [open "${mut}_sasa_hpli.txt" w]
+    set outfile_sasa_all [open "${mut}_sasa_all.txt" w]
+    set outfile_sasa_hpob [open "${mut}_sasa_hpob.txt" w]
+    set outfile_sasa_hpli [open "${mut}_sasa_hpli.txt" w]
 
     set timestep 2
     set dcdFreq 24000
@@ -27,8 +26,8 @@ foreach mut $mutlist {
     mol addfile ${trjpath}/${dcdName}.dcd waitfor all
     set trj_p_all [atomselect $trjid "protein"]
     set trj_p_noh [atomselect $trjid "protein and backbone"]
-    # set trj_p_hpob [atomselect $trjid "protein and hydrophobic"]
-    # set trj_p_hpli [atomselect $trjid "protein and not hydrophobic"]
+    set trj_p_hpob [atomselect $trjid "protein and hydrophobic"]
+    set trj_p_hpli [atomselect $trjid "protein and not hydrophobic"]
 
     set nFrames [molinfo $trjid get numframes]
     
@@ -43,13 +42,14 @@ foreach mut $mutlist {
 	# measure overal rmsd
 	set rmsd_all [measure rmsd $ref_p_noh $trj_p_noh]
 	puts $outfile_rmsd_all "[format %.4f $t] $rmsd_all"
-	# # measure overall SASA 
-	# set sasa_all [measure sasa 1.4 $trj_p_all]
-	# set sasa_hpob [measure sasa 1.4 $trj_p_hpob]
-	# set sasa_hpli [measure sasa 1.4 $trj_p_hpli]
-	# puts $outfile_sasa_all "[format %.4f $t] $sasa_all" 
-	# puts $outfile_sasa_hpob "[format %.4f $t] $sasa_hpob" 
-	# puts $outfile_sasa_hpli "[format %.4f $t] $sasa_hpli" 
+
+	# measure overall SASA 
+	set sasa_all [measure sasa 1.4 $trj_p_all]
+	set sasa_hpob [measure sasa 1.4 $trj_p_hpob]
+	set sasa_hpli [measure sasa 1.4 $trj_p_hpli]
+	puts $outfile_sasa_all "[format %.4f $t] $sasa_all" 
+	puts $outfile_sasa_hpob "[format %.4f $t] $sasa_hpob" 
+	puts $outfile_sasa_hpli "[format %.4f $t] $sasa_hpli" 
 	
     }
     

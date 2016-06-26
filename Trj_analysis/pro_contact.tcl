@@ -54,12 +54,12 @@ proc ProteinContact {} {
     # set Oxygen atoms of PEG as selection1
     set text1 "(segname PEG and name O1) and within ${findrange} of protein" 
 
-#     # Get the time change between frames in picoseconds.                                                                       
-#     set dt [expr 1.0e-3*$timestep*$dcdFreq]
+    # Get the time change between frames in picoseconds.                                                                       
+    set dt [expr 1.0e-3*$timestep*$dcdFreq]
 
     # Load the trajectory.                                                                                                     
-    # mol load psf 
-#     mol addfile ${dcdname}.dcd type dcd first $startframe last $endframe waitfor all
+    mol load psf 
+    mol addfile ${dcdname}.dcd type dcd first $startframe last $endframe waitfor all
     set nFrames [molinfo top get numframes]
     puts [format "Reading %i frames." $nFrames]
     set sel1 [atomselect top $text1] 
@@ -77,7 +77,6 @@ proc ProteinContact {} {
     # Process frame by frame
     for {set iframe $startframe} {$iframe < $nFrames} {incr iframe} {
 	set outfile [open "~/Han/PhD/WW/ContactMap/S16AY23FP4/data/contactmap_S16AY23FP4_${iframe}.txt" w]
-
 	set mapi [ContactMap $iframe $sel1 $map]
 		
 	# Update the display.                                                                                              
@@ -85,7 +84,7 @@ proc ProteinContact {} {
 	    puts "frame: $iframe"
 	}
 	
-#	puts $mapi
+	puts $mapi
 	# write to map of iframe to an dat file with 3 decimal precision 
 	for {set i 0} {$i < $m} {incr i} {
 	    for {set j 0} {$j < $n} {incr j} {
@@ -96,7 +95,7 @@ proc ProteinContact {} {
 	close $outfile
     }
 
-    #mol delete top
+    mol delete top
 }
 
 

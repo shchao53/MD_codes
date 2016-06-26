@@ -9,6 +9,7 @@ proc computeS {framefirst framelast text} {
 	$sel update
 	if {$i==$framefirst} {set survival [$sel list]}
 	set lcurr [$sel list]	
+
 	# compute survival list between initial list and current list, remove those molecules moving out
 	set survival_tmp {}
 	foreach j $survival {
@@ -39,6 +40,7 @@ proc wsurvival {psfname dcdname dcdFreq timestep d} {
     puts $outfile "t S_$dcdname"
 
     set sel [atomselect top $text]
+
     # Move forward, computing Chb(t)                                                                                          
     for {set fincr 0} {$fincr <= $nFrames-1} {incr fincr} {
         # Get the time in picoseconds for this increment.                                                                    
@@ -48,8 +50,10 @@ proc wsurvival {psfname dcdname dcdFreq timestep d} {
   
         for {set startframe 0} {$startframe < [expr $nFrames-$fincr]} {incr startframe} {
             set lastframe [expr $startframe + $fincr]
+
 	    # compute number of survival molecules
 	    set S_ti [computeS $startframe $lastframe $text]
+
 	    # Normalization
 	    if {$fincr == 0} {
 		lappend S_t0 $S_ti
